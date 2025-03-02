@@ -1,22 +1,28 @@
 class Solution {
     public int[][] mergeArrays(int[][] nums1, int[][] nums2) {
-        TreeMap<Integer, Integer> mergedMap = new TreeMap<>();
-
-        for (int[] pair : nums1) {
-         mergedMap.put(pair[0], mergedMap.getOrDefault(pair[0], 0) + pair[1]);
+        int n1=nums1.length,n2=nums2.length,i=0,j=0;
+        ArrayList<int []>ans=new ArrayList();
+        while(i<n1&& j<n2){
+            if(nums1[i][0]==nums2[j][0]){
+                ans.add(new int[]{nums1[i][0],nums1[i][1]+nums2[j][1]});
+                i++;
+                j++;
+            }
+            else if(nums1[i][0]<nums2[j][0]){
+                ans.add(nums1[i]);
+                i++;
+            }
+            else{
+                ans.add(nums2[j]);
+                j++;
+            }
         }
-        for (int[] pair : nums2) {
-         mergedMap.put(pair[0], mergedMap.getOrDefault(pair[0], 0) + pair[1]);
+        while(i<n1){
+            ans.add(nums1[i++]);
         }
-
-                int[][] result = new int[mergedMap.size()][2];
-        int index = 0;
-        for (Map.Entry<Integer, Integer> entry : mergedMap.entrySet()) {
-            result[index++] = new int[]{entry.getKey(), entry.getValue()};
+        while(j<n2){
+            ans.add(nums2[j++]);
         }
-
-        return result;
-
-
+        return ans.toArray(new int[ans.size()][]);
     }
 }
