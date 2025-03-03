@@ -1,24 +1,32 @@
 class Solution {
     public int[] pivotArray(int[] arr, int pivot) {
-        List<Integer> left = new ArrayList<>();
-        List<Integer> middle = new ArrayList<>();
-        List<Integer> right = new ArrayList<>();
+        int n = arr.length;
+        int[] result = new int[n];
+        int index = 0;
 
+        // First pass: Add elements less than pivot
         for (int num : arr) {
             if (num < pivot) {
-                left.add(num);
-            } else if (num == pivot) {
-                middle.add(num);
-            } else {
-                right.add(num);
+                result[index++] = num;
             }
         }
 
-        int i = 0;
-        for (int num : left) arr[i++] = num;
-        for (int num : middle) arr[i++] = num;
-        for (int num : right) arr[i++] = num;
+        // Second pass: Add elements equal to pivot
+        for (int num : arr) {
+            if (num == pivot) {
+                result[index++] = num;
+            }
+        }
 
+        // Third pass: Add elements greater than pivot
+        for (int num : arr) {
+            if (num > pivot) {
+                result[index++] = num;
+            }
+        }
+
+        // Copy back to original array to maintain in-place behavior
+        System.arraycopy(result, 0, arr, 0, n);
         return arr;
     }
 }
