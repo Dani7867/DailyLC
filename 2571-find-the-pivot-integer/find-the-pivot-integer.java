@@ -1,11 +1,7 @@
 class Solution {
     public int pivotInteger(int n) {
-        for(int i = 1 ; i<=n ; i++){
-            int p = i;
-            if((p*(p+1))/2 == ((n*(n+1))/2 - (p*(p-1))/2)){
-                return p;
-            }
+          int total = (n * (n + 1)) / 2;
+          int x = (int)Math.sqrt(total);
+          return x * x == total ? x : -1;
         }
-        return -1;
     }
-}
