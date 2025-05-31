@@ -1,14 +1,18 @@
 class Solution {
     public boolean checkIfPangram(String sentence) {
-        char[] freq = new char[26];
-        for(char c : sentence.toCharArray()){
-            freq[c - 'a']++;
+    boolean[] seen = new boolean[26];
+    int count = 0;
+
+    for (char c : sentence.toCharArray()) {
+        int idx = c - 'a';
+        if (!seen[idx]) {
+            seen[idx] = true;
+            count++;
+            if (count == 26) return true; // early exit
         }
-        for(int i = 0 ; i<26 ; i++){
-            if(freq[i] < 1){
-                return false;
-            }
-        }
-        return true;
     }
+
+    return false;
+}
+
 }
