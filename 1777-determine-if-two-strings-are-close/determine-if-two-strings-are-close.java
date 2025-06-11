@@ -5,27 +5,20 @@ class Solution {
             return false;
         }
         
-        // Use HashMap to store character frequencies
-        Map<Character, Integer> map1 = new HashMap<>();
-        Map<Character, Integer> map2 = new HashMap<>();
-        
-        // Populate map1 with word1 frequencies
-        for (char c : word1.toCharArray()) {
-            map1.put(c, map1.getOrDefault(c, 0) + 1);
+        int[] f1 = new int[26];
+        int[] f2 = new int[26];
+        for(char c : word1.toCharArray()){
+            f1[c - 'a']++;
         }
-        
-        // Populate map2 with word2 frequencies
-        for (char c : word2.toCharArray()) {
-            map2.put(c, map2.getOrDefault(c, 0) + 1);
+        for(char c : word2.toCharArray()){
+            f2[c - 'a']++;
         }
-        
-        // Check if key sets (characters) are the same
-        if (!map1.keySet().equals(map2.keySet())) {
-            return false;
+        for(int i = 0 ; i <26 ; i++){
+            if(f1[i] > 0 && !(f2[i]>0)) return false;
         }
-        
-        // Compare sorted frequency counts
-        return map1.values().stream().sorted().toList()
-                .equals(map2.values().stream().sorted().toList());
+
+        Arrays.sort(f1);
+        Arrays.sort(f2);
+        return Arrays.equals(f1,f2);
     }
 }
