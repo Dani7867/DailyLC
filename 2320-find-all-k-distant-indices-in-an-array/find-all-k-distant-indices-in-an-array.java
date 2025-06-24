@@ -1,23 +1,20 @@
 class Solution {
     public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
-        List<Integer> res = new ArrayList<>();
+        boolean[] mark = new boolean[nums.length];
 
-        // Step 1: Collect all positions where nums[i] == key
-        List<Integer> keyIndices = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == key) {
-                keyIndices.add(i);
+                int start = Math.max(0, i - k);
+                int end = Math.min(nums.length - 1, i + k);
+                for (int j = start; j <= end; j++) {
+                    mark[j] = true;
+                }
             }
         }
 
-        // Step 2: For each index in the array, check if it is within distance k of any key index
+        List<Integer> res = new ArrayList<>();
         for (int i = 0; i < nums.length; i++) {
-            for (int j : keyIndices) {
-                if (Math.abs(i - j) <= k) {
-                    res.add(i);
-                    break;  // Only need one such key index
-                }
-            }
+            if (mark[i]) res.add(i);
         }
 
         return res;
