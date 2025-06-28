@@ -1,25 +1,24 @@
+import java.util.*;
+
 class Solution {
-   public int[] maxSubsequence(int[] nums, int k) {
-    // PriorityQueue: (value, index), ascending by value (min-heap)
-    PriorityQueue<int[]> pq = new PriorityQueue<>(
-        (a, b) -> a[0] != b[0] ? a[0] - b[0] : b[1] - a[1]
-    );
+    public int[] maxSubsequence(int[] nums, int k) {
+        int n = nums.length;
+        int[][] indexed = new int[n][2];
 
-    for (int i = 0; i < nums.length; i++) {
-        pq.offer(new int[]{nums[i], i});
-        if (pq.size() > k) pq.poll();  // keep only k largest
+        for (int i = 0; i < n; i++) {
+            indexed[i][0] = nums[i];
+            indexed[i][1] = i;
+        }
+
+        Arrays.sort(indexed, (a, b) -> b[0] - a[0]); // sort by value descending
+        int[][] topK = Arrays.copyOfRange(indexed, 0, k);
+
+        Arrays.sort(topK, Comparator.comparingInt(a -> a[1])); // sort by original index
+
+        int[] result = new int[k];
+        for (int i = 0; i < k; i++) {
+            result[i] = topK[i][0];
+        }
+        return result;
     }
-
-    int[][] topK = new int[k][2];
-    for (int i = 0; i < k; i++) topK[i] = pq.poll();
-
-    // Sort by index to preserve original order
-    Arrays.sort(topK, (a, b) -> Integer.compare(a[1], b[1]));
-
-    int[] res = new int[k];
-    for (int i = 0; i < k; i++) res[i] = topK[i][0];
-
-    return res;
-}
-
 }
