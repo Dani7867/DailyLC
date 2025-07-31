@@ -1,39 +1,97 @@
 class Solution {
+    static final int MAX_COST = 1000001;
+    
     public int minCost(int[] houses, int[][] cost, int m, int n, int target) {
-        int[][][] dp = new int[m+1][n+1][target+1];
-        for(int[][] b : dp){
-            for(int[] a:b){
-                Arrays.fill(a,-1);
+        int[][][] dp = new int[m][n][target]; 
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int k = 0; k < target; k++) {
+                    dp[i][j][k] = MAX_COST;
+                }
             }
         }
-        int res = dfs(0,0,0,houses,cost,m,n,target,dp);
-        return res == Integer.MAX_VALUE ? -1 : res;
-    }
-
-    private int dfs(int i,int pcolor,int neighborH , int[] houses, int[][] cost, int m, int n, int target,int[][][] dp){
-            if(neighborH > target) return Integer.MAX_VALUE;
-
-            if(i == m) return neighborH == target ? 0 : Integer.MAX_VALUE;
-
-            if(dp[i][pcolor][neighborH] != -1) return dp[i][pcolor][neighborH] ;
-
-              int minCost = Integer.MAX_VALUE;
-
-              if(houses[i] != 0){
-                int newNeighborH = neighborH + (houses[i] != pcolor ? 1 : 0);
-                minCost = dfs(i+1,houses[i],newNeighborH,houses,cost,m,n,target,dp);
-              }else{
-                for(int l = 1 ; l<=n ;l++){
-                    int newNeighborH = neighborH + (l != pcolor ? 1 : 0);
-                    int currCost = cost[i][l - 1];
-                    int temp = dfs(i + 1, l, newNeighborH, houses, cost, m, n, target, dp);
-
-                    if(temp != Integer.MAX_VALUE){
-                        minCost = Math.min(minCost,temp+currCost);
-                        }
+         
+        if (houses[0] == 0) {
+            for (int j = 0; j < n; j++) {
+                dp[0][j][target - 1] = cost[0][j];
+            } 
+        } else {
+            int j = houses[0] - 1;
+            dp[0][j][target - 1] = 0;
+        }
+        
+        
+        int lr = target - 1;
+        
+        for (int i = 1; i < m; i++) {
+            int hr = m - i;
+            if (hr >= target) {
+                hr = target - 1;
+            }
+            
+            if (houses[i] > 0) {
+                int j = houses[i] - 1;
+                for (int remaining = hr; remaining >= lr; remaining--) {
+                    // not change
+                    dp[i][j][remaining] = Math.min(dp[i][j][remaining], dp[i - 1][j][remaining]);
+                    
+                    // change
+                    if (houses[i - 1] > 0 && houses[i - 1] - 1 != j) {
+                        dp[i][j][remaining - 1] = Math.min(dp[i][j][remaining - 1], dp[i - 1][houses[i - 1] - 1][remaining]);
+                    } else {
+                        dp[i][j][remaining - 1] = Math.min(dp[i][j][remaining - 1], min(dp[i - 1], j, remaining));
                     }
                 }
-        return dp[i][pcolor][neighborH] = minCost;
+                
+                if (lr == 1) {
+                    dp[i][j][0] = Math.min(dp[i][j][0], dp[i - 1][j][0]);
+                }
+            } else {
+                for (int j = 0; j < n; j++) {
+                    for (int remaining = hr; remaining >= lr; remaining--) {
+                        // not change
+                        int a = dp[i - 1][j][remaining];
+                        int b = cost[i][j];
+                        dp[i][j][remaining] = Math.min(dp[i][j][remaining], dp[i - 1][j][remaining] + cost[i][j]);
+
+                        // change
+                        if (houses[i - 1] > 0 && houses[i - 1] - 1 != j) {
+                            dp[i][j][remaining - 1] = Math.min(dp[i][j][remaining - 1], dp[i - 1][houses[i - 1] - 1][remaining] + cost[i][j]);
+                        } else {
+                            dp[i][j][remaining - 1] = Math.min(dp[i][j][remaining - 1], min(dp[i - 1], j, remaining) + cost[i][j]);
+                        }
+                    }
+
+                    if (lr == 1) {
+                        dp[i][j][0] = Math.min(dp[i][j][0], dp[i - 1][j][0] + cost[i][j]);
+                    }
+                }
+            }
+            
+            if (lr > 1) {
+                lr--;
+            }
+        }
+        
+        int min = dp[m - 1][0][0];
+        for (int j = 1; j < n; j++) {
+            if (dp[m - 1][j][0] < min) {
+                min = dp[m - 1][j][0];
+            }
+        }
+
+        return min < MAX_COST ? min : -1;
     }
     
+    private int min(int[][] minCost, int j, int remaining) {
+        int min = Integer.MAX_VALUE;
+        for (int k = 0; k < minCost.length; k++) {
+            if (k != j && minCost[k][remaining] < min) {
+                min = minCost[k][remaining];
+            }
+        }
+        
+        return min;
+    }
 }
