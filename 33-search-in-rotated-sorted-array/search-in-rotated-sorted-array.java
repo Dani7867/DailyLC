@@ -1,40 +1,22 @@
 class Solution {
     public int search(int[] nums, int target) {
-        int p = getPivot(nums,0,nums.length-1);
-        int e = bs(nums,0,p,target);
-        if(e==-1){
-            e = bs(nums,p+1,nums.length-1,target);
-        }
-        return e;
-    }
-
-    private int getPivot(int[] arr , int l , int r){
-        
-        while(l<=r){
-            int mid = l+(r-l)/2;
-            if(mid < arr.length - 1 && arr[mid]>arr[mid+1]){
+        int lo = 0 , hi = nums.length - 1;
+        while(lo<=hi){
+            int mid = (lo+hi)/2;
+            if(nums[mid] == target){ 
                 return mid;
-            }else if(mid>0 && arr[mid]<arr[mid-1]){
-                return mid-1;
-            }else if(arr[l] < arr[mid]){
-                l = mid+1;
-            }else{
-                r = mid-1;
-            }
-
-        }
-        return -1;
-    }
-
-    private int bs(int[] arr , int l , int r , int t){
-        while(l<=r){
-            int mid = l+(r-l)/2;
-            if(arr[mid]==t){
-                return mid;
-            }else if(t>arr[mid]){
-                l = mid+1;
-            }else{
-                r = mid - 1;
+            }else if(nums[lo] <= nums[mid]){
+                if(target>=nums[lo] && nums[mid]>target){
+                    hi = mid - 1;
+                }else{
+                    lo = mid+1;
+                }
+            }else if(nums[mid] <= nums[hi]){
+                if(target>nums[mid] && nums[hi]>=target){
+                    lo = mid + 1;
+                }else{
+                    hi = mid-1;
+                }
             }
         }
         return -1;
