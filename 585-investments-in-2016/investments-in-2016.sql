@@ -5,5 +5,5 @@ Insurance where tiv_2015 IN (
     group by tiv_2015 having count(tiv_2015) > 1
 ) AND (lat,lon) IN (
     select lat,lon from Insurance
-    group by lat,lon having count(lat) = 1
+    group by lat,lon having count(*) = 1
 );
